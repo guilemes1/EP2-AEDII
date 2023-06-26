@@ -332,7 +332,7 @@ void removeFromNonLeaf(bTree* tree, bTreeNode *node, int idx) {    //MODIFICAD0
     
     if (child->noOfRecs >= t) {
         recordNode* pred = getPred(tree, node, idx);
-        node->keyRecArr[idx] = pred;
+        node->keyRecArr[idx] = pred->codigoLivro;       //verificado
         removeNode(tree, child, pred->codigoLivro); 
     }
  
@@ -340,7 +340,7 @@ void removeFromNonLeaf(bTree* tree, bTreeNode *node, int idx) {    //MODIFICAD0
     else if  (sibling->noOfRecs >= t)
     {
         recordNode* succ = getSucc(tree, node, idx);
-        node->keyRecArr[idx] = succ;
+        node->keyRecArr[idx] = succ->codigoLivro;      //vericado
         removeNode(tree, sibling, succ->codigoLivro); 
     }
  
@@ -427,7 +427,7 @@ recordNode* getSucc(bTree* tree, bTreeNode *node, int idx) {
     }
  
     
-    recordNode* result = curr->keyRecArr[0];
+    recordNode* result = curr->posRecArr[0];     //PRESTA ATENCAO
     free(curr);
     return result;
 }
@@ -470,8 +470,10 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
     readFile(tree, sibling, node->children[idx-1]);
     
 
-    for (int i=child->noOfRecs-1; i>=0; --i)
+    for (int i=child->noOfRecs-1; i>=0; --i){
         child->keyRecArr[i+1] = child->keyRecArr[i];
+        child->posRecArr[i+1] = child->posRecArr[i];    //verificar
+    }
  
     if (!child->isLeaf) {
         for(int i=child->noOfRecs; i>=0; --i)
@@ -479,6 +481,7 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
     }
  
     child->keyRecArr[0] = node->keyRecArr[idx-1];
+    child->posRecArr[0] = node->posRecArr[idx-1];      //verificar
  
     if (!node->isLeaf) {
         child->children[0] = sibling->children[sibling->noOfRecs];
@@ -486,6 +489,7 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
     }
  
     node->keyRecArr[idx-1] = sibling->keyRecArr[sibling->noOfRecs-1];
+    node->posRecArr[idx-1] = sibling->posRecArr[sibling->noOfRecs-1];   //verificar
  
     child->noOfRecs += 1;
     sibling->noOfRecs -= 1;
@@ -509,14 +513,18 @@ void borrowFromNext(bTree* tree, bTreeNode *node, int idx) {   ///MODIFICADO
     readFile(tree, sibling, node->children[idx+1]);
     
     child->keyRecArr[(child->noOfRecs)] = node->keyRecArr[idx];
+    child->posRecArr[(child->noOfRecs)] = node->posRecArr[idx];     ///verificar
  
     if (!(child->isLeaf))
         child->children[(child->noOfRecs)+1] = sibling->children[0];
  
     node->keyRecArr[idx] = sibling->keyRecArr[0];
+    node->posRecArr[idx] = sibling->posRecArr[0];           //verificar
  
-    for (int i=1; i<sibling->noOfRecs; ++i)
+    for (int i=1; i<sibling->noOfRecs; ++i){
         sibling->keyRecArr[i-1] = sibling->keyRecArr[i];
+        sibling->posRecArr[i-1] = sibling->posRecArr[i];      //verificar
+    }
  
     if (!sibling->isLeaf) {
         for(int i=1; i<=sibling->noOfRecs; ++i)
@@ -547,17 +555,22 @@ bTreeNode* merge(bTree* tree, bTreeNode *node, int idx) {    //MODIFICADO
     readFile(tree, sibling, node->children[idx+1]);
     
     child->keyRecArr[t-1] = node->keyRecArr[idx];
+    child->posRecArr[t-1] = node->posRecArr[idx];
  
-    for (int i=0; i<sibling->noOfRecs; ++i)
+    for (int i=0; i<sibling->noOfRecs; ++i){
         child->keyRecArr[i+t] = sibling->keyRecArr[i];
+        child->posRecArr[i+t] = sibling->posRecArr[i];
+    }    
  
     if (!child->isLeaf) {
         for(int i=0; i<=sibling->noOfRecs; ++i)
             child->children[i+t] = sibling->children[i];
     }
 
-    for (int i=idx+1; i<node->noOfRecs; ++i)
+    for (int i=idx+1; i<node->noOfRecs; ++i){
         node->keyRecArr[i-1] = node->keyRecArr[i];
+        node->posRecArr[i-1] = node->posRecArr[i];
+    }
  
     for (int i=idx+2; i<=node->noOfRecs; ++i) 
         node->children[i-1] = node->children[i];
@@ -619,11 +632,25 @@ void doublePrint(bTree* tree) {
 //-----------------------------------------------------------------------------
 
 
-// void insertBook(FILE* file,recordNode* record) {
+void insertBook(FILE* file, recordNode* record) {
+    fseek(file, 0, SEEK_END);  //mover o ponteiro para o final do arquivo
+    fwrite(record, sizeof(recordNode), 1, file);
+}
 
-//     if(feof(file))
-//         fseek(file, sizeof(recordNode), 0);
-//         fwrite(record, sizeof(recordNode), 1, file);
+void removeBook(FILE * file, int key){
+    recordNode* record = malloc(sizeof(recordNode));
+	fseek(file, 0, SEEK_SET);       // Mover o ponteiro para o início do arquivo
 
+    while (fread(record, sizeof(recordNode), 1, file) == 1) {
+		if (record->valid && record->codigoLivro == key){
+			record->valid = false;
+			fseek(file, -sizeof(recordNode), SEEK_CUR);
+			fwrite(record, sizeof(recordNode), 1, file);
+            break;
+        }
+	}
+}
 
-// }
+void searchBook(FILE* file, int key){
+    
+}

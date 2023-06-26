@@ -81,3 +81,9 @@ void removeFromNonLeaf(bTree* tree, bTreeNode *node, int idx);
 void removeFromLeaf (bTree* tree, bTreeNode *node, int idx);
 void removeNode(bTree* tree, bTreeNode* node, int k);
 int findKey(bTreeNode* node, int k);
+
+//---------------------------------------------
+
+void insertBook(FILE* file,recordNode* record);
+void removeBook(FILE * file, int key);
+

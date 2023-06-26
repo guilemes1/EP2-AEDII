@@ -6,7 +6,7 @@ int main(int argc, char const *argv[])
 	FILE* biblioteca = fopen("data.dat", "wb+");
 
 	char operacao[3];
-	char linha[100];
+	char linha[200];
 	int posicao = 0;
 
 	while(strcmp(operacao,"F")){
@@ -27,10 +27,9 @@ int main(int argc, char const *argv[])
 			sscanf(linha, "%2s %d;%[^;];%[^;];%d", operacao, &codigoLivro, titulo, nomeCompletoPrimeiroAutor, &anoPublicacao);
 			enterData(record, codigoLivro, titulo, nomeCompletoPrimeiroAutor, anoPublicacao);
 
-			insert(tree, record, &posicao);   //Insere na arvore / estrutura de indices
-			
-			fseek(biblioteca, 0, SEEK_END); //mover o ponteiro para o final do arquivo
-			fwrite(record, sizeof(recordNode), 1, biblioteca);
+			insert(tree, record, &posicao);   //Insere na arvore / estrutura de indices		
+			insertBook(biblioteca, record);
+
 			printf("O livro com código %d foi inserido na biblioteca :)\n\n", record->codigoLivro);
 			
 		}
@@ -40,18 +39,7 @@ int main(int argc, char const *argv[])
 			sscanf(linha, "%2s %d", operacao, &codigoLivro);
 
 			bool res = removeFromTree(tree,codigoLivro);
-
-			recordNode* record = malloc(sizeof(recordNode));
-			fseek(biblioteca, 0, SEEK_SET); // Mover o ponteiro para o início do arquivo
-
-			while (fread(record, sizeof(recordNode), 1, biblioteca) == 1) {
-				if (record->valid && record->codigoLivro == codigoLivro){
-					record->valid = false;
-					fseek(biblioteca, -sizeof(recordNode), SEEK_CUR);
-					fwrite(record, sizeof(recordNode), 1, biblioteca);
-            		break;
-        		}
-			}
+			removeBook(biblioteca, codigoLivro);
 
 			if(res)
 			{
