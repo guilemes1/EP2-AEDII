@@ -3,28 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// 1 , AFG , DIST , 93 , 18
-// struct rec
-// {
-// 	int key;
-// 	// rest
-// 	char country[5];
-// 	char grate[10];
-// 	int score;
-// 	int rate;
-// };
-// typedef struct rec recordNode;
-
-// struct bTreeNode
-// {
-// 	bool isLeaf; 
-// 	int pos; 
-// 	int noOfRecs;
-// 	recordNode* recordArr[2 * t - 1];
-// 	int children[2 * t]; 
-// };
-// typedef struct bTreeNode bTreeNode;
-
 struct rec
 {
 	bool valid; // indica se o registro foi eliminado ou não
@@ -86,4 +64,6 @@ int findKey(bTreeNode* node, int k);
 
 void insertBook(FILE* file,recordNode* record);
 void removeBook(FILE * file, int key);
+recordNode* searchBook(FILE* file, int key);
+void printTree(bTree* tree);
 

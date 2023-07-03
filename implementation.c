@@ -651,6 +651,26 @@ void removeBook(FILE * file, int key){
 	}
 }
 
-void searchBook(FILE* file, int key){
-    
+recordNode* searchBook(FILE* file, int key){
+	recordNode* record = malloc(sizeof(recordNode));
+	fseek(file, 0, SEEK_SET); // Mover o ponteiro para o início do arquivo
+
+	while (fread(record, sizeof(recordNode), 1, file) == 1) {
+		if (record->valid && record->codigoLivro == key){
+			return record;
+        }
+	}
+    return NULL; 
+}
+
+void printTree(bTree* tree) {
+
+    bTreeNode *toPrint = malloc(sizeof(bTreeNode));
+    fseek(tree->fp, 0, SEEK_SET);
+
+    while(fread(toPrint, sizeof(bTreeNode), 1, tree->fp) == 1) {
+        dispNode(toPrint);
+    }
+
+    free(toPrint);
 }

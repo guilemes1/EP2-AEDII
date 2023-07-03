@@ -59,16 +59,7 @@ int main(int argc, char const *argv[])
 			sscanf(linha, "%2s %d", operacao, &codigoLivro);
 		    //recordNode* res = search(tree,codigoLivro);
 
-			recordNode* result = NULL;
-			recordNode* record = malloc(sizeof(recordNode));
-			fseek(biblioteca, 0, SEEK_SET); // Mover o ponteiro para o início do arquivo
-
-			while (fread(record, sizeof(recordNode), 1, biblioteca) == 1) {
-				if (record->valid && record->codigoLivro == codigoLivro){
-					result = record;
-            		break;
-        		}
-			}
+			recordNode* result = searchBook(biblioteca, codigoLivro);
 			
 			if(result != NULL) {
 				// printf("codigo\ttitulo\tautor\tano\n");
@@ -83,11 +74,11 @@ int main(int argc, char const *argv[])
 		}
 
 		if(!strcmp(operacao,"P1")){
-			
+			traverse(tree, tree->root);
 		}
 
 		if(!strcmp(operacao,"P2")){
-			traverse(tree, tree->root);
+			printTree(tree);
 		}
 
 		if(!strcmp(operacao,"P3")){
