@@ -118,10 +118,10 @@ void splitChild(bTree* tree, bTreeNode* x, int i, bTreeNode* y)     //MODIFICADO
 	for(j=(x->noOfRecs) - 1; j >= i;j--)
 	{
 		x->keyRecArr[j+1] = x->keyRecArr[j];
-        x->posRecArr[j+1] = x->posRecArr[j];        //verificar
+        x->posRecArr[j+1] = x->posRecArr[j];        //
 	}
 	x->keyRecArr[i] = y->keyRecArr[t-1];
-    x->posRecArr[i] = y->posRecArr[t-1];            //verificar
+    x->posRecArr[i] = y->posRecArr[t-1];            //
 	x->noOfRecs++;
 
     writeFile(tree, x, x->pos);
@@ -138,11 +138,11 @@ void insertNonFull(bTree* tree,bTreeNode* x,recordNode* record,int* posicao)    
 		while((i>=0) && (record->codigoLivro < x->keyRecArr[i]))
 		{
 			x->keyRecArr[i+1] = x->keyRecArr[i];
-            x->posRecArr[i+1] = x->posRecArr[i];   //verificar
+            x->posRecArr[i+1] = x->posRecArr[i];   //
 			i--;
 		}
 		x->keyRecArr[i+1] = record->codigoLivro;
-        x->posRecArr[i+1] = (*posicao)++;            //verificar
+        x->posRecArr[i+1] = (*posicao)++;            //
 		(x->noOfRecs)++;
 
         writeFile(tree, x, x->pos);
@@ -244,7 +244,7 @@ void traverse(bTree* tree, int root) {
 
 void dispNode(bTreeNode* node)      //modificado
 {
-    printf("Valid: %d\n", node->valid);            //adicionado
+    printf("Valid: %d\n", node->valid);            //
 	printf("Position in node:%d\n",node->pos );
     printf("Number of Records:%d\n",node->noOfRecs );
 	printf("Is leaf?:%d\n",node->isLeaf );
@@ -254,7 +254,7 @@ void dispNode(bTreeNode* node)      //modificado
 		printf("%d ", node->keyRecArr[i]);
 	}
     printf("\nposRec:\n");
-    for(int i = 0; i < node->noOfRecs; i++)  //adicionado
+    for(int i = 0; i < node->noOfRecs; i++)  //
 	{
 		printf("%d ", node->posRecArr[i]);
 	}
@@ -286,7 +286,7 @@ recordNode* searchRecursive(bTree* tree, int key, bTreeNode* root) {  //MODIFICA
         bTreeNode* childAtPosi = malloc(sizeof(bTreeNode));
         readFile(tree, childAtPosi, root->children[i]);
 
-        recordNode* found = searchRecursive(tree, key, childAtPosi);  //a funçao devolve um inteiro
+        recordNode* found = searchRecursive(tree, key, childAtPosi);  //
         free(childAtPosi);
         return found;
     }
@@ -313,7 +313,7 @@ int findKey(bTreeNode* node, int k) {
 void removeFromLeaf (bTree* tree, bTreeNode *node, int idx) {  //MODIFICADO
     for (int i=idx+1; i<node->noOfRecs; ++i){
 	    node->keyRecArr[i-1] = node->keyRecArr[i];
-        node->posRecArr[i-1] = node->posRecArr[i];    //verificar
+        node->posRecArr[i-1] = node->posRecArr[i];    //
     }
     node->noOfRecs--;
 }
@@ -332,7 +332,7 @@ void removeFromNonLeaf(bTree* tree, bTreeNode *node, int idx) {    //MODIFICAD0
     
     if (child->noOfRecs >= t) {
         recordNode* pred = getPred(tree, node, idx);
-        node->keyRecArr[idx] = pred->codigoLivro;       //verificado
+        node->keyRecArr[idx] = pred->codigoLivro;       //
         removeNode(tree, child, pred->codigoLivro); 
     }
  
@@ -340,7 +340,7 @@ void removeFromNonLeaf(bTree* tree, bTreeNode *node, int idx) {    //MODIFICAD0
     else if  (sibling->noOfRecs >= t)
     {
         recordNode* succ = getSucc(tree, node, idx);
-        node->keyRecArr[idx] = succ->codigoLivro;      //vericado
+        node->keyRecArr[idx] = succ->codigoLivro;      //
         removeNode(tree, sibling, succ->codigoLivro); 
     }
  
@@ -427,7 +427,7 @@ recordNode* getSucc(bTree* tree, bTreeNode *node, int idx) {
     }
  
     
-    recordNode* result = curr->posRecArr[0];     //PRESTA ATENCAO
+    recordNode* result = curr->posRecArr[0];     //
     free(curr);
     return result;
 }
@@ -472,7 +472,7 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
 
     for (int i=child->noOfRecs-1; i>=0; --i){
         child->keyRecArr[i+1] = child->keyRecArr[i];
-        child->posRecArr[i+1] = child->posRecArr[i];    //verificar
+        child->posRecArr[i+1] = child->posRecArr[i];    //
     }
  
     if (!child->isLeaf) {
@@ -481,7 +481,7 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
     }
  
     child->keyRecArr[0] = node->keyRecArr[idx-1];
-    child->posRecArr[0] = node->posRecArr[idx-1];      //verificar
+    child->posRecArr[0] = node->posRecArr[idx-1];      //
  
     if (!node->isLeaf) {
         child->children[0] = sibling->children[sibling->noOfRecs];
@@ -489,7 +489,7 @@ void borrowFromPrev(bTree* tree, bTreeNode *node, int idx) {
     }
  
     node->keyRecArr[idx-1] = sibling->keyRecArr[sibling->noOfRecs-1];
-    node->posRecArr[idx-1] = sibling->posRecArr[sibling->noOfRecs-1];   //verificar
+    node->posRecArr[idx-1] = sibling->posRecArr[sibling->noOfRecs-1];   //
  
     child->noOfRecs += 1;
     sibling->noOfRecs -= 1;
@@ -513,17 +513,17 @@ void borrowFromNext(bTree* tree, bTreeNode *node, int idx) {   ///MODIFICADO
     readFile(tree, sibling, node->children[idx+1]);
     
     child->keyRecArr[(child->noOfRecs)] = node->keyRecArr[idx];
-    child->posRecArr[(child->noOfRecs)] = node->posRecArr[idx];     ///verificar
+    child->posRecArr[(child->noOfRecs)] = node->posRecArr[idx];     ///
  
     if (!(child->isLeaf))
         child->children[(child->noOfRecs)+1] = sibling->children[0];
  
     node->keyRecArr[idx] = sibling->keyRecArr[0];
-    node->posRecArr[idx] = sibling->posRecArr[0];           //verificar
+    node->posRecArr[idx] = sibling->posRecArr[0];           //
  
     for (int i=1; i<sibling->noOfRecs; ++i){
         sibling->keyRecArr[i-1] = sibling->keyRecArr[i];
-        sibling->posRecArr[i-1] = sibling->posRecArr[i];      //verificar
+        sibling->posRecArr[i-1] = sibling->posRecArr[i];      //
     }
  
     if (!sibling->isLeaf) {

@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
 			insert(tree, record, &posicao);   //Insere na arvore / estrutura de indices		
 			insertBook(biblioteca, record);
 
-			printf("O livro com código %d foi inserido na biblioteca :)\n\n", record->codigoLivro);
+			printf(", record->codigoLivro);
 			
 		}
 
@@ -114,7 +114,5 @@ int main(int argc, char const *argv[])
 		}
 
 	}	       
-
-//	free(records);
 	
 }	
